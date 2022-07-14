@@ -2,18 +2,41 @@ import React from "react";
 import { useState } from "react";
 import {  onPress, SafeAreaView, TouchableOpacity, Text, StyleSheet, TextInput } from "react-native";
 
-const sendText =(phoneNumber) =>{
-
-  await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber),{
+const sendText = async (phoneNumber) =>{
+  const textResponse = await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber,{
     method: 'POST',
-    headers:{
-      'Content-Type': 'application/text'
-    }
-  }
-  console.log("PhoneNumber:", phoneNumber);
-}
+    headers:{'Content-Type': 'application/text' }
+  });
+};
 
-const login = () => {
+
+const getToken = async ({phoneNumber, oneTimePassword, setUserLoggedIn}) => {
+  const tokenResponse = await fetch('https://dev.stedi.me/twofactorlogin',{
+    method: 'POST',
+    body:JSON.stringify({oneTimePassword, phoneNumber}),
+    headers:{'content-type':'application/json'}
+  });
+
+
+  const responseCode = tokenResponse.status;
+  console.log("Response Status Code", responseCode);
+  if(responseCode==200)
+    setUserLoggedIn(true);
+
+};
+
+  const tokenResponseString = await tokenResponse.text();
+  console.log("Token",tokenResponseString);
+  
+  const getUsername = await fetch('https://dev.stedi.me/validate/'+tokenResponseString);
+ 
+  const getUserString = await getUsername.text();
+  console.log("Username", getUserString);
+
+
+
+
+const login = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [oneTimePassword, setOneTimePassword] = useState(null);
 
@@ -28,7 +51,7 @@ const login = () => {
       />
       <TouchableOpacity
         style={styles.button}
-        onPress={()=>(sendText(phoneNumber))}
+        onPress={()=> sendText(phoneNumber)}
       >
         <Text>Send Text</Text>
       </TouchableOpacity>
@@ -44,7 +67,7 @@ const login = () => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={()=>(sendText(phoneNumber))}
+        onPress={()=>{getToken({phoneNumber, oneTimePassword, setUserLoggedIn:props.setUserLoggedIn})}}
       >
         <Text>Login</Text>
       </TouchableOpacity>

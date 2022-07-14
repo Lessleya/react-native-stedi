@@ -19,7 +19,10 @@ export default function App()
   const [userloggedIn, setuserLoggedIn] = useState(false)
 
   if(userloggedIn){
+
   return (
+
+
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName='Home'
@@ -28,7 +31,7 @@ export default function App()
       >
         <Tab.Screen
           name='Home'
-          component={Home}
+          children={()=><Home loggedInUser= ''/>}
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({ color }) => (
@@ -62,9 +65,7 @@ export default function App()
         } else{
 
         return (
-          <View>
-          <Login></Login>
-          </View>
+          <Login setuserLoggedIn={setuserLoggedIn}/>
         )
       }
 }

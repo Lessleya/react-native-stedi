@@ -4,15 +4,16 @@ import { Card, ListItem, Button, Icon } from 'react-native-elements';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-function Setting() {
-    return(
-      <View>
-      <Button
-      title="Log In"
-      onPress={() => Alert.alert('Simple Button pressed')}
-    />
-      </View>
-    )
-  }
+function Setting(props) {
+  return(
+    <View>
+      <Text>Welcome {props.loggedInUser}</Text>
+    <Button
+    title="Log In"
+    onPress={() => Alert.alert('You\'re already logged in')}
+  />
+    </View>
+  )
+}
 
 export default Setting;
